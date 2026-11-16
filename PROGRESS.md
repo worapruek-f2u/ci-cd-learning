@@ -21,4 +21,5 @@
 | 6 | Secrets, environment variables, สรุป + cheat sheet | ⬜ |
 
 ## บันทึก
-- 2026-11-16: สร้าง NestJS project (`nest new`), lint/test/build ผ่านในเครื่อง, แก้ warning `void bootstrap()` ใน `src/main.ts`
+- 2026-11-16: สร้าง NestJS project (`nest new`), lint/test/build ผ่านในเครื่อง, แก้ warning `void bootstrap()` ใน `src/main.ts`, เพิ่ม `.gitignore` + `.gitattributes` (LF), git init branch `main`, commit แรก
+- ถัดไป: บทที่ 1 — ผู้เรียนต้องสร้าง repo เปล่าบน GitHub (ไม่ติ๊ก README) แล้วส่ง URL มา
