@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workflow Trigger Patterns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f7f5; --surface: #ffffff; --text: #1d1d1b; --muted: #5f5f5a;
+    --border: #e2e1dc; --accent: #2f6fde; --code-bg: #f0efeb;
+    --good: #1f8a4c; --good-bg: #e6f4ec;
+    --warn: #b42318; --warn-bg: #fdecec;
+    --a: #7a4cc2; --a-bg: #f1eafb;
+    --c: #2f6fde; --c-bg: #e8f0fd;
+    --hl: #fff4c2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161615; --surface: #1f1f1d; --text: #ecebe6; --muted: #a3a29c;
+      --border: #34342f; --accent: #7aa7ff; --code-bg: #2a2a27;
+      --good: #5fd08f; --good-bg: #17301f;
+      --warn: #ff8a80; --warn-bg: #3a1a18;
+      --a: #c3a2f5; --a-bg: #2a2036;
+      --c: #7aa7ff; --c-bg: #1b2538;
+      --hl: #4a4220;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161615; --surface: #1f1f1d; --text: #ecebe6; --muted: #a3a29c;
+    --border: #34342f; --accent: #7aa7ff; --code-bg: #2a2a27;
+    --good: #5fd08f; --good-bg: #17301f;
+    --warn: #ff8a80; --warn-bg: #3a1a18;
+    --a: #c3a2f5; --a-bg: #2a2036;
+    --c: #7aa7ff; --c-bg: #1b2538;
+    --hl: #4a4220;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.7 "IBM Plex Sans Thai", system-ui, sans-serif;
+  }
+  main { max-width: 920px; margin: 0 auto; padding: 40px 16px 80px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; }
+  h2 { font-size: 1.35rem; margin: 44px 0 12px; }
+  h3 { font-size: 1.02rem; margin: 18px 0 6px; }
+  p.lead { color: var(--muted); margin: 0 0 24px; }
+  a { color: var(--accent); }
+  code, pre { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .85em; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px; }
+  pre {
+    background: var(--code-bg); padding: 14px 16px; border-radius: 8px;
+    overflow-x: auto; line-height: 1.55; margin: 8px 0 14px;
+  }
+  pre code { background: none; padding: 0; }
+  mark { background: var(--hl); color: inherit; border-radius: 3px; padding: 0 2px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 22px; margin: 14px 0;
+  }
+  .card.a { border-top: 4px solid var(--a); }
+  .card.c { border-top: 4px solid var(--c); }
+  .badge {
+    display: inline-block; font-size: .78rem; font-weight: 700;
+    padding: 2px 10px; border-radius: 999px; margin-right: 6px; vertical-align: 2px;
+  }
+  .badge.a { color: var(--a); background: var(--a-bg); }
+  .badge.c { color: var(--c); background: var(--c-bg); }
+  .badge.good { color: var(--good); background: var(--good-bg); }
+  .card h2 { margin-top: 4px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 680px) { .grid { grid-template-columns: 1fr; } }
+  .level { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .level b { display: block; font-size: 1.05rem; }
+  .level span { color: var(--muted); font-size: .92rem; }
+  .pitfall {
+    background: var(--warn-bg); border-radius: 8px; padding: 10px 14px; margin: 10px 0 4px;
+  }
+  .pitfall strong { color: var(--warn); }
+  .pitfall ul { margin: 4px 0 0; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: .85rem; }
+  .ok { color: var(--good); font-weight: 600; }
+  .no { color: var(--warn); font-weight: 600; }
+  ul { padding-left: 22px; }
+  li { margin: 3px 0; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Workflow ทำงานพร้อมกันไหม &amp; ให้ CD รอ CI</h1>
+<p class="lead">อ่านคู่กับ <a href="ci-cd-summary.html">ci-cd-summary.html</a> · โปรเจกต์ <code>ci-cd-learning</code></p>
+
+<!-- ============================================================ -->
+<h2>1. ลำดับการทำงาน 3 ระดับ</h2>
+<div class="grid">
+  <div class="level">
+    <b>Workflow (ไฟล์)</b>
+    <span>แต่ละไฟล์ใน <code>.github/workflows/</code> อิสระต่อกัน รันเมื่อ event ตรงกับ <code>on:</code> ของตัวเอง — ถ้าหลายไฟล์ตรงกัน <strong>รันพร้อมกัน</strong></span>
+  </div>
+  <div class="level">
+    <b>Job</b>
+    <span>หลาย job ในไฟล์เดียว <strong>รันพร้อมกัน</strong> แต่ละ job ได้เครื่องใหม่ — ใส่ <code>needs:</code> เพื่อให้รอกัน (ใช้ได้เฉพาะในไฟล์เดียวกัน)</span>
+  </div>
+  <div class="level">
+    <b>Step</b>
+    <span>ใน job เดียว <strong>รันทีละขั้น</strong> บนลงล่างเสมอ ขั้นไหนพัง ขั้นที่เหลือ skipped</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">ตอนนี้ของเราเป็นแบบนี้</h3>
+<pre><code>event                      ci.yml        cd.yml
+เปิด PR / push เข้า PR      ✅ รัน         ❌ ไม่รัน
+merge เข้า main            ✅ รัน         ✅ รัน   ← พร้อมกัน!
+
+merge → CI (lint/test/build)   ── ถ้าแดง ❌ ...
+      → CD (docker → deploy)   ── ... CD deploy ไปแล้ว 😬</code></pre>
+  <p style="margin:0">ruleset บังคับ CI ผ่านที่ PR ก่อนอยู่แล้ว จึงปลอดภัยพอสมควร แต่ยังมีช่องโหว่กรณี <em>PR A ผ่าน + PR B ผ่าน แต่รวมกันแล้วพัง</em> — แก้ได้ 2 แบบด้านล่าง</p>
+</div>
+
+<!-- ============================================================ -->
+<div class="card a">
+  <h2><span class="badge a">แบบ A</span><code>workflow_run</code> — “ทำต่อเมื่อ CI จบ”</h2>
+  <p>แก้แค่ <code>cd.yml</code> — <code>ci.yml</code> ไม่ต้องแตะ</p>
+
+<pre><code>name: CD
+
+on:
+  <mark>workflow_run:</mark>
+    <mark>workflows: [CI]</mark>          # ชื่อตรงกับ "name: CI" (ไม่ใช่ชื่อไฟล์)
+    <mark>types: [completed]</mark>       # trigger เมื่อ CI จบ — ทั้งผ่านและพัง
+    branches: [main]
+
+jobs:
+  docker:
+    <mark>if: &gt;</mark>
+      <mark>github.event.workflow_run.conclusion == 'success' &amp;&amp;</mark>
+      <mark>github.event.workflow_run.event == 'push'</mark>
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          <mark>ref: ${{ github.event.workflow_run.head_sha }}</mark>   # commit เดียวกับที่ CI ทดสอบ
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:<mark>${{ github.event.workflow_run.head_sha }}</mark>
+
+  deploy:
+    needs: docker
+    # ... เหมือนเดิม แต่เปลี่ยน github.sha → github.event.workflow_run.head_sha</code></pre>
+
+  <h3>หน้า Actions</h3>
+<pre><code>CI  ✅  (lint/test/build)
+  └─► CD ✅  (docker → deploy)     ← 2 run แยกกัน</code></pre>
+
+  <div class="pitfall">
+    <strong>⚠️ ต้องระวัง</strong>
+    <ul>
+      <li><strong>ห้ามใช้ <code>github.sha</code></strong> — ใน <code>workflow_run</code> มันคือ commit ล่าสุดของ main ตอน CD เริ่ม อาจไม่ใช่ commit ที่ CI ทดสอบ → ใช้ <code>workflow_run.head_sha</code></li>
+      <li><code>workflow_run</code> อ่านไฟล์จาก <strong>main เท่านั้น</strong> → ทดสอบบน PR ไม่ได้ ต้อง merge ก่อนถึงเห็นผล</li>
+      <li>ถ้ามีคนเปลี่ยน <code>name: CI</code> → CD เงียบหายไปเลย ไม่มี error</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="card c">
+  <h2><span class="badge c">แบบ C</span>Reusable workflow — “CD เรียกใช้ CI” <span class="badge good">แนะนำ</span></h2>
+
+  <h3>ขั้นที่ 1 · <code>ci.yml</code> — เปิดให้ถูกเรียกได้</h3>
+<pre><code>name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  <mark>workflow_call:</mark>             # อนุญาตให้ workflow อื่นเรียกไฟล์นี้
+  # push: main  ← ลบออก เพราะ CD เรียกให้แทน (ไม่ลบ = CI รัน 2 รอบ)
+
+jobs:
+  build-and-test:
+    # ... steps เหมือนเดิมทุกอย่าง</code></pre>
+
+  <h3>ขั้นที่ 2 · <code>cd.yml</code> — เรียก CI เป็น job แรก</h3>
+<pre><code>name: CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  <mark>ci:</mark>
+    <mark>uses: ./.github/workflows/ci.yml</mark>     # เรียกทั้งไฟล์ ci.yml เป็น job หนึ่ง
+
+  docker:
+    <mark>needs: ci</mark>                            # needs ข้ามไฟล์ได้แล้ว เพราะอยู่ run เดียวกัน
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      # ... เหมือนเดิม (ใช้ github.sha ได้ปกติ)
+
+  deploy:
+    needs: docker
+    # ... เหมือนเดิม</code></pre>
+
+  <h3>หน้า Actions</h3>
+<pre><code>CD:  ci / build-and-test ✅ ──► docker ✅ ──► deploy ✅     ← run เดียว เห็นทั้ง pipeline</code></pre>
+
+  <div class="pitfall">
+    <strong>⚠️ ต้องระวัง</strong>
+    <ul>
+      <li>ถ้า <code>ci.yml</code> ต้องใช้ secret → ส่งให้ด้วย <code>secrets: inherit</code> ใต้ <code>uses:</code></li>
+      <li>ตอนเปิด PR ยังรัน <code>CI</code> แบบเดิม check ชื่อ <code>build-and-test</code> ไม่เปลี่ยน → ruleset ไม่ต้องแก้</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<h2>2. เปรียบเทียบ</h2>
+<div class="card">
+<div class="table-wrap">
+<table>
+  <thead><tr><th></th><th><span class="badge a">A</span> workflow_run</th><th><span class="badge c">C</span> Reusable</th></tr></thead>
+  <tbody>
+    <tr><td>ไฟล์ที่แก้</td><td><code>cd.yml</code> อย่างเดียว</td><td><code>ci.yml</code> + <code>cd.yml</code></td></tr>
+    <tr><td>หน้า Actions</td><td>2 run แยกกัน</td><td class="ok">1 run เห็นทั้ง pipeline</td></tr>
+    <tr><td>commit ตรงกันแน่นอน</td><td class="no">ต้องระวัง <code>head_sha</code> เอง</td><td class="ok">✅ <code>github.sha</code> ปกติ</td></tr>
+    <tr><td>ทดสอบบน PR ได้</td><td class="no">❌ ต้อง merge ก่อน</td><td class="ok">✅ ได้</td></tr>
+    <tr><td>เหมาะกับ</td><td>CI / CD คนละทีมดูแล, CD ต้องรอหลาย workflow</td><td>โปรเจกต์ทั่วไป, ใช้ CI ซ้ำหลายที่</td></tr>
+  </tbody>
+</table>
+</div>
+<p style="margin:12px 0 0"><strong>สรุป:</strong> โปรเจกต์นี้ใช้ <strong>C</strong> ดีกว่า — ไม่ต้องระวังเรื่อง sha, เห็น pipeline ในหน้าเดียว, ทดสอบบน PR ได้</p>
+</div>
+
+</main>
+</body>
+</html>

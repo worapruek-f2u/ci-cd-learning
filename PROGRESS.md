@@ -17,8 +17,8 @@
 | 2 | Workflow แรก: GitHub Actions รัน lint/test/build | ✅ |
 | 3 | Pull Request + ให้ CI ตรวจก่อน merge (branch protection) | ✅ |
 | 4 | CD: build Docker image → push GitHub Container Registry (GHCR) | ✅ |
-| 5 | CD: deploy ขึ้น Render (image จาก GHCR + deploy hook) | ⏳ |
-| 6 | Secrets, environment variables, สรุป + cheat sheet | ⬜ |
+| 5 | CD: deploy ขึ้น Render (image จาก GHCR + deploy hook) | ✅ |
+| 6 | สรุป + cheat sheet → `docs/ci-cd-summary.html` | ✅ |
 
 ## บันทึก
 - 2026-11-16: สร้าง NestJS project (`nest new`), lint/test/build ผ่านในเครื่อง, แก้ warning `void bootstrap()` ใน `src/main.ts`, เพิ่ม `.gitignore` + `.gitattributes` (LF), git init branch `main`, commit แรก
@@ -32,4 +32,8 @@
   - สอนเพิ่ม: เหตุผลที่ CI รันบน push main ด้วย, actions คืออะไร/หาจาก Marketplace, merge 3 แบบ (แนะนำ squash), auto-merge, conflict, `gh` CLI (ผู้เรียนยังไม่ได้ติดตั้ง)
   - ค้าง: branch `fix/hello-message` บน GitHub ยังไม่ถูกลบ
 - 2026-11-16: บทที่ 5 — เลือก Render. branch `feat/render-deploy`: เพิ่ม job `deploy` (needs: docker, environment: production) ใน `cd.yml` เรียก secret `RENDER_DEPLOY_HOOK_URL` + `imgURL=<image:sha>`
-- ถัดไป: ผู้เรียนตั้ง GHCR package เป็น Public → สร้าง Render Web Service จาก existing image → copy Deploy Hook → เพิ่ม repo secret → push + PR + merge → เปิด URL onrender.com
+- 2026-11-16: บทที่ 5 เสร็จ — Render live: https://ci-cd-learning-0wkh.onrender.com/hc (ผู้เรียนเพิ่ม hc module เอง, PR #4; CI แดงจาก lint 2 รอบก่อนแก้ผ่าน)
+- 2026-11-16: บทที่ 6 — เขียน `docs/ci-cd-summary.html` (ขั้นตอน + จำเป็น/ควรทำ/ข้ามได้, cheat sheet, shell ที่ต้องรู้, ข้อผิดพลาด, หัวข้อต่อยอด) บน branch `docs/ci-cd-summary`
+- 2026-11-16: สอนเรื่อง workflow/job/step รันพร้อมกันไหม + CD ไม่รอ CI ตอน push main → เขียน `docs/workflow-patterns.html` (แบบ A workflow_run vs C reusable, แนะนำ C) — ยังไม่ได้ implement
+- 2026-11-16: เริ่มอธิบายบทเสริม "CD รอ CI ด้วย reusable workflow (แบบ C)" แล้ว ผู้เรียนขอพักไว้ก่อน (ถือเป็นเนื้อหาเสริม ยังไม่ได้ทำ)
+- หัวข้อต่อยอดที่เสนอ (ยังไม่ได้ทำ): [เสริม/พักไว้] เปลี่ยน CD เป็นแบบ C, husky pre-commit, Render Health Check Path=/hc, gh CLI, staging/production, rollback, Dependabot
