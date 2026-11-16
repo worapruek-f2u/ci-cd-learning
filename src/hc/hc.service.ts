@@ -6,5 +6,5 @@ export class HcService {
     return {
       status: 'Healthy',
     };
-  };
+  }
 }

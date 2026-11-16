@@ -3,10 +3,10 @@ import { HcService } from './hc.service';
 
 @Controller()
 export class HcController {
-  constructor(private readonly service: HcService) { }
+  constructor(private readonly service: HcService) {}
 
   @Get('/hc')
-  async check(){
+  async check() {
     return this.service.check();
-  };
+  }
 }

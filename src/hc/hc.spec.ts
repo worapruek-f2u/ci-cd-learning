@@ -12,7 +12,7 @@ describe('hc service', () => {
     }).compile();
 
     hcController = app.get<HcController>(HcController);
-  })
+  });
 
   it('should return status: "Healthy"', async () => {
     await expect(hcController.check()).resolves.toMatchObject({

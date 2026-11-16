@@ -3,7 +3,7 @@ import { HcController } from './hc.controller';
 import { HcService } from './hc.service';
 
 @Module({
-  controllers:[HcController],
+  controllers: [HcController],
   providers: [HcService],
 })
 export class HcModule {}
