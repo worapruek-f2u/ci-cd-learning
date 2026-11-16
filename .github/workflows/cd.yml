@@ -31,3 +31,20 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Trigger Render deploy
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "::error::Secret RENDER_DEPLOY_HOOK_URL is not set"
+            exit 1
+          fi
+          curl -fsS -X POST "$DEPLOY_HOOK&imgURL=$(jq -rn --arg v "$IMAGE" '$v|@uri')"
