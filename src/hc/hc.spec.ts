@@ -14,8 +14,8 @@ describe('hc service', () => {
     hcController = app.get<HcController>(HcController);
   });
 
-  it('should return status: "Healthy"', async () => {
-    await expect(hcController.check()).resolves.toMatchObject({
+  it('should return status: "Healthy"', () => {
+    expect(hcController.check()).toMatchObject({
       status: 'Healthy',
     });
   });

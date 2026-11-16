@@ -6,7 +6,7 @@ export class HcController {
   constructor(private readonly service: HcService) {}
 
   @Get('/hc')
-  async check() {
+  check() {
     return this.service.check();
   }
 }
