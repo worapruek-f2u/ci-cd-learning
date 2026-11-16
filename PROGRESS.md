@@ -16,8 +16,8 @@
 | 1 | CI/CD คืออะไร + push ขึ้น GitHub repo ใหม่ | ✅ |
 | 2 | Workflow แรก: GitHub Actions รัน lint/test/build | ✅ |
 | 3 | Pull Request + ให้ CI ตรวจก่อน merge (branch protection) | ✅ |
-| 4 | CD: build Docker image → push GitHub Container Registry (GHCR) | ⏳ |
-| 5 | CD: deploy ให้เข้าเว็บได้จริง (เลือก platform ตอนถึงบท) | ⬜ |
+| 4 | CD: build Docker image → push GitHub Container Registry (GHCR) | ✅ |
+| 5 | CD: deploy ขึ้น Render (image จาก GHCR + deploy hook) | ⏳ |
 | 6 | Secrets, environment variables, สรุป + cheat sheet | ⬜ |
 
 ## บันทึก
@@ -28,4 +28,8 @@
 - 2026-11-16: บทที่ 3 เสร็จ — ruleset `protect-main` (PR required, approvals 0, status check `build-and-test`), PR #1 merged, push ตรงเข้า main โดน GH013 ปฏิเสธ
   - ⚠️ ตั้งแต่นี้ทุกอย่าง (รวม PROGRESS.md) ต้องเข้า main ผ่าน branch + PR
 - 2026-11-16: บทที่ 4 — branch `feat/docker-cd`: `Dockerfile` (multi-stage, node:24-alpine), `.dockerignore`, `.github/workflows/cd.yml` (push main → ghcr.io/worapruek-f2u/ci-cd-learning:latest + :sha)
-- ถัดไป: ทดสอบ docker build ในเครื่อง (ต้องเปิด Docker Desktop) → commit → ผู้เรียน push + เปิด PR + merge → ดู image ใน Packages
+- 2026-11-16: บทที่ 4 เสร็จ — PR #2 squash merged, CD เขียว, image อยู่บน GHCR
+  - สอนเพิ่ม: เหตุผลที่ CI รันบน push main ด้วย, actions คืออะไร/หาจาก Marketplace, merge 3 แบบ (แนะนำ squash), auto-merge, conflict, `gh` CLI (ผู้เรียนยังไม่ได้ติดตั้ง)
+  - ค้าง: branch `fix/hello-message` บน GitHub ยังไม่ถูกลบ
+- 2026-11-16: บทที่ 5 — เลือก Render. branch `feat/render-deploy`: เพิ่ม job `deploy` (needs: docker, environment: production) ใน `cd.yml` เรียก secret `RENDER_DEPLOY_HOOK_URL` + `imgURL=<image:sha>`
+- ถัดไป: ผู้เรียนตั้ง GHCR package เป็น Public → สร้าง Render Web Service จาก existing image → copy Deploy Hook → เพิ่ม repo secret → push + PR + merge → เปิด URL onrender.com
