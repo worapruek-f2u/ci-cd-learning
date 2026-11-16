@@ -35,4 +35,5 @@
 - 2026-11-16: บทที่ 5 เสร็จ — Render live: https://ci-cd-learning-0wkh.onrender.com/hc (ผู้เรียนเพิ่ม hc module เอง, PR #4; CI แดงจาก lint 2 รอบก่อนแก้ผ่าน)
 - 2026-11-16: บทที่ 6 — เขียน `docs/ci-cd-summary.html` (ขั้นตอน + จำเป็น/ควรทำ/ข้ามได้, cheat sheet, shell ที่ต้องรู้, ข้อผิดพลาด, หัวข้อต่อยอด) บน branch `docs/ci-cd-summary`
 - 2026-11-16: สอนเรื่อง workflow/job/step รันพร้อมกันไหม + CD ไม่รอ CI ตอน push main → เขียน `docs/workflow-patterns.html` (แบบ A workflow_run vs C reusable, แนะนำ C) — ยังไม่ได้ implement
-- หัวข้อต่อยอดที่เสนอ (ยังไม่ได้ทำ): เปลี่ยน CD เป็นแบบ C (หลัง merge PR docs), husky pre-commit, Render Health Check Path=/hc, gh CLI, staging/production, rollback, Dependabot
+- 2026-11-16: เริ่มอธิบายบทเสริม "CD รอ CI ด้วย reusable workflow (แบบ C)" แล้ว ผู้เรียนขอพักไว้ก่อน (ถือเป็นเนื้อหาเสริม ยังไม่ได้ทำ)
+- หัวข้อต่อยอดที่เสนอ (ยังไม่ได้ทำ): [เสริม/พักไว้] เปลี่ยน CD เป็นแบบ C, husky pre-commit, Render Health Check Path=/hc, gh CLI, staging/production, rollback, Dependabot
