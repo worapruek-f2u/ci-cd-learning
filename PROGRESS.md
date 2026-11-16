@@ -13,8 +13,8 @@
 | # | บท | สถานะ |
 |---|----|-------|
 | 0 | Setup project NestJS + git init | ✅ |
-| 1 | CI/CD คืออะไร + push ขึ้น GitHub repo ใหม่ | ⏳ |
-| 2 | Workflow แรก: GitHub Actions รัน lint/test/build | ⬜ |
+| 1 | CI/CD คืออะไร + push ขึ้น GitHub repo ใหม่ | ✅ |
+| 2 | Workflow แรก: GitHub Actions รัน lint/test/build | ⏳ |
 | 3 | Pull Request + ให้ CI ตรวจก่อน merge (branch protection) | ⬜ |
 | 4 | CD: build Docker image → push GitHub Container Registry (GHCR) | ⬜ |
 | 5 | CD: deploy ให้เข้าเว็บได้จริง (เลือก platform ตอนถึงบท) | ⬜ |
@@ -22,4 +22,6 @@
 
 ## บันทึก
 - 2026-11-16: สร้าง NestJS project (`nest new`), lint/test/build ผ่านในเครื่อง, แก้ warning `void bootstrap()` ใน `src/main.ts`, เพิ่ม `.gitignore` + `.gitattributes` (LF), git init branch `main`, commit แรก
-- ถัดไป: บทที่ 1 — ผู้เรียนต้องสร้าง repo เปล่าบน GitHub (ไม่ติ๊ก README) แล้วส่ง URL มา
+- 2026-11-16: บทที่ 1 เสร็จ — repo: https://github.com/worapruek-f2u/ci-cd-learning (remote `origin`)
+- 2026-11-16: บทที่ 2 — สร้าง `.github/workflows/ci.yml` + script `lint:check` (ไม่ --fix, max-warnings=0), รันจำลองในเครื่องผ่าน
+- ถัดไป: ผู้เรียน push แล้วดูแท็บ Actions → จากนั้นทดลองทำ CI พัง (แก้ test ให้ fail) แล้วดูสีแดง
