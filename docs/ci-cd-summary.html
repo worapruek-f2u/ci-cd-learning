@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CI/CD Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f7f5; --surface: #ffffff; --text: #1d1d1b; --muted: #5f5f5a;
+    --border: #e2e1dc; --accent: #2f6fde; --code-bg: #f0efeb;
+    --must: #1f8a4c; --must-bg: #e6f4ec;
+    --rec: #b26a00; --rec-bg: #fdf1dc;
+    --opt: #6b6b66; --opt-bg: #eeeeea;
+    --warn-bg: #fdecec; --warn: #b42318;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161615; --surface: #1f1f1d; --text: #ecebe6; --muted: #a3a29c;
+      --border: #34342f; --accent: #7aa7ff; --code-bg: #2a2a27;
+      --must: #5fd08f; --must-bg: #17301f;
+      --rec: #f0b45a; --rec-bg: #33270f;
+      --opt: #b0afa9; --opt-bg: #2a2a27;
+      --warn-bg: #3a1a18; --warn: #ff8a80;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161615; --surface: #1f1f1d; --text: #ecebe6; --muted: #a3a29c;
+    --border: #34342f; --accent: #7aa7ff; --code-bg: #2a2a27;
+    --must: #5fd08f; --must-bg: #17301f;
+    --rec: #f0b45a; --rec-bg: #33270f;
+    --opt: #b0afa9; --opt-bg: #2a2a27;
+    --warn-bg: #3a1a18; --warn: #ff8a80;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.7 "IBM Plex Sans Thai", system-ui, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 40px 16px 80px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; }
+  h2 { font-size: 1.35rem; margin: 48px 0 12px; padding-top: 8px; border-top: 1px solid var(--border); }
+  h3 { font-size: 1.05rem; margin: 24px 0 8px; }
+  p.lead { color: var(--muted); margin: 0 0 24px; }
+  a { color: var(--accent); }
+  code, pre { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .86em; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px; }
+  pre {
+    background: var(--code-bg); padding: 14px 16px; border-radius: 8px;
+    overflow-x: auto; line-height: 1.55; margin: 8px 0 16px;
+  }
+  pre code { background: none; padding: 0; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px; margin: 12px 0;
+  }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 16px; }
+  .tag {
+    display: inline-block; font-size: .78rem; font-weight: 600;
+    padding: 1px 9px; border-radius: 999px; white-space: nowrap; vertical-align: 1px;
+  }
+  .must { color: var(--must); background: var(--must-bg); }
+  .rec  { color: var(--rec);  background: var(--rec-bg); }
+  .opt  { color: var(--opt);  background: var(--opt-bg); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: .85rem; }
+  .flow {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    font-size: .9rem; margin: 12px 0;
+  }
+  .flow span.step {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 10px;
+  }
+  .flow span.arrow { color: var(--muted); }
+  .warn { background: var(--warn-bg); border-color: transparent; }
+  .warn strong { color: var(--warn); }
+  ul { padding-left: 22px; }
+  li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>CI/CD กับ GitHub — สรุปสิ่งที่ทำมา</h1>
+<p class="lead">โปรเจกต์ NestJS → GitHub Actions → GHCR → Render · repo: <a href="https://github.com/worapruek-f2u/ci-cd-learning">worapruek-f2u/ci-cd-learning</a> · เว็บ: <a href="https://ci-cd-learning-0wkh.onrender.com/hc">ci-cd-learning-0wkh.onrender.com/hc</a></p>
+
+<div class="flow" aria-label="ภาพรวม pipeline">
+  <span class="step">branch + commit</span><span class="arrow">→</span>
+  <span class="step">เปิด PR</span><span class="arrow">→</span>
+  <span class="step">CI: lint · test · build</span><span class="arrow">→</span>
+  <span class="step">merge เข้า main</span><span class="arrow">→</span>
+  <span class="step">CD: build image → GHCR</span><span class="arrow">→</span>
+  <span class="step">Render deploy</span>
+</div>
+
+<div class="legend">
+  <span class="tag must">จำเป็น</span> ขาดไม่ได้ ไม่มีแล้ว pipeline ไม่ทำงาน
+  <span class="tag rec">ควรทำ</span> ข้ามได้ แต่งานจริงเกือบทุกทีมทำ
+  <span class="tag opt">ข้ามได้</span> ของเสริม ทำตอนพร้อม
+</div>
+
+<!-- ============================================================ -->
+<h2>1. ขั้นตอนทั้งหมด ทีละบท</h2>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>บท</th><th>ทำอะไร</th><th>ระดับ</th><th>หมายเหตุ</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td>สร้างโปรเจกต์ + <code>.gitignore</code></td><td><span class="tag must">จำเป็น</span></td><td>ไม่มี <code>.gitignore</code> = <code>node_modules</code> หลุดขึ้น git</td></tr>
+    <tr><td>0</td><td><code>.gitattributes</code> (บังคับ LF)</td><td><span class="tag rec">ควรทำ</span></td><td>กันปัญหา Windows (CRLF) กับ Linux runner (LF) ต่างกัน</td></tr>
+    <tr><td>1</td><td>สร้าง repo เปล่าบน GitHub + <code>git push -u origin main</code></td><td><span class="tag must">จำเป็น</span></td><td>อย่าติ๊ก README ตอนสร้าง ถ้าในเครื่องมีโค้ดอยู่แล้ว</td></tr>
+    <tr><td>2</td><td><code>.github/workflows/ci.yml</code></td><td><span class="tag must">จำเป็น</span></td><td>โฟลเดอร์ตายตัว ชื่อไฟล์ตั้งอะไรก็ได้ (<code>.yml</code>/<code>.yaml</code>)</td></tr>
+    <tr><td>2</td><td>script <code>lint:check</code> (ไม่มี <code>--fix</code>)</td><td><span class="tag rec">ควรทำ</span></td><td>CI ต้อง “ฟ้อง” ไม่ใช่แก้ให้เงียบ ๆ</td></tr>
+    <tr><td>2</td><td>step E2E test</td><td><span class="tag opt">ข้ามได้</span></td><td>มีแล้วดี แต่ถ้า e2e ช้า/ต้องใช้ DB อาจแยกไปรันทีหลัง</td></tr>
+    <tr><td>3</td><td>Ruleset: Require pull request</td><td><span class="tag rec">ควรทำ</span></td><td>ทำงานคนเดียวข้ามได้ แต่ทีมควรมีเสมอ</td></tr>
+    <tr><td>3</td><td>Ruleset: Require status check <code>build-and-test</code></td><td><span class="tag rec">ควรทำ</span></td><td>ตัวนี้แหละที่ทำให้โค้ดพังเข้า main ไม่ได้จริง</td></tr>
+    <tr><td>3</td><td>Squash merge · Auto-merge · Auto-delete branch</td><td><span class="tag opt">ข้ามได้</span></td><td>ความสะดวก/ความสะอาดของ history</td></tr>
+    <tr><td>4</td><td><code>Dockerfile</code> + <code>.dockerignore</code></td><td><span class="tag must">จำเป็น</span></td><td>จำเป็นเมื่อ deploy แบบ image (Render, Cloud Run, k8s)</td></tr>
+    <tr><td>4</td><td>Multi-stage build · <code>USER node</code></td><td><span class="tag rec">ควรทำ</span></td><td>image เล็กลง ปลอดภัยขึ้น</td></tr>
+    <tr><td>4</td><td><code>cd.yml</code> job <code>docker</code> → push GHCR</td><td><span class="tag must">จำเป็น</span></td><td>ต้องมี <code>permissions: packages: write</code></td></tr>
+    <tr><td>4</td><td>tag image ด้วย <code>${{ github.sha }}</code></td><td><span class="tag rec">ควรทำ</span></td><td>รู้ว่ารันโค้ด commit ไหน + rollback ได้</td></tr>
+    <tr><td>5</td><td>GHCR package เป็น Public</td><td><span class="tag must">จำเป็น*</span></td><td>*ถ้า private ต้องใส่ credential ใน Render แทน</td></tr>
+    <tr><td>5</td><td>Render Web Service จาก Existing Image</td><td><span class="tag must">จำเป็น</span></td><td>แอปต้องฟัง <code>process.env.PORT</code></td></tr>
+    <tr><td>5</td><td>Secret <code>RENDER_DEPLOY_HOOK_URL</code></td><td><span class="tag must">จำเป็น</span></td><td>ห้ามใส่ใน code เด็ดขาด</td></tr>
+    <tr><td>5</td><td>job <code>deploy</code> (<code>needs: docker</code>)</td><td><span class="tag must">จำเป็น</span></td><td>ไม่มี <code>needs</code> = deploy ก่อน image เสร็จ</td></tr>
+    <tr><td>5</td><td><code>environment: production</code></td><td><span class="tag opt">ข้ามได้</span></td><td>ได้หน้า Deployments + ตั้งให้ต้อง approve ก่อน deploy ได้</td></tr>
+    <tr><td>5</td><td>ส่ง <code>imgURL=&lt;sha&gt;</code> ไป Render</td><td><span class="tag opt">ข้ามได้</span></td><td>ไม่ส่ง = Render ดึง <code>:latest</code> แทน</td></tr>
+    <tr><td>—</td><td>Endpoint <code>/hc</code> (health check)</td><td><span class="tag rec">ควรทำ</span></td><td>ตั้งเป็น Health Check Path ใน Render ได้ → deploy พังจะไม่สลับไปใช้ตัวใหม่</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<h2>2. ไฟล์สำคัญในโปรเจกต์</h2>
+
+<h3><code>.github/workflows/ci.yml</code> — ตรวจโค้ด</h3>
+<pre><code>on:
+  push:         { branches: [main] }   # ตรวจ main หลัง merge
+  pull_request: { branches: [main] }   # ตรวจทุก PR
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+      - run: npm run lint:check
+      - run: npm test
+      - run: npm run test:e2e
+      - run: npm run build</code></pre>
+
+<h3><code>.github/workflows/cd.yml</code> — ส่งของขึ้น server</h3>
+<pre><code>on:
+  push: { branches: [main] }           # เฉพาะเมื่อเข้า main
+jobs:
+  docker:
+    permissions: { contents: read, packages: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3       # login ghcr.io ด้วย GITHUB_TOKEN
+      - uses: docker/build-push-action@v6  # tag :latest + :&lt;sha&gt;
+  deploy:
+    needs: docker                          # รอ docker เสร็จก่อน
+    environment: production
+    steps:
+      - run: curl -fsS -X POST "$DEPLOY_HOOK&amp;imgURL=..."</code></pre>
+
+<!-- ============================================================ -->
+<h2>3. Cheat sheet</h2>
+
+<h3>YAML ของ GitHub Actions</h3>
+<div class="table-wrap">
+<table>
+  <tbody>
+    <tr><td><code>on:</code></td><td>เมื่อไหร่จะรัน (push, pull_request, schedule, workflow_dispatch = กดเอง)</td></tr>
+    <tr><td><code>jobs:</code></td><td>งานแต่ละชุด — <strong>รันพร้อมกัน</strong> ถ้าไม่ใส่ <code>needs</code></td></tr>
+    <tr><td><code>runs-on:</code></td><td>เครื่องที่ใช้ (<code>ubuntu-latest</code> ถูก/เร็วสุด)</td></tr>
+    <tr><td><code>steps:</code></td><td>ทำทีละขั้นบนลงล่าง ขั้นไหนพัง ที่เหลือ <em>skipped</em></td></tr>
+    <tr><td><code>uses:</code></td><td>เรียก action สำเร็จรูป <code>owner/repo@version</code> (หาจาก Marketplace)</td></tr>
+    <tr><td><code>run:</code></td><td>รันคำสั่ง shell (bash บน ubuntu)</td></tr>
+    <tr><td><code>${{ }}</code></td><td>ดึงค่า: <code>github.sha</code>, <code>github.repository</code>, <code>secrets.X</code></td></tr>
+    <tr><td><code>needs:</code></td><td>ให้ job นี้รอ job อื่น</td></tr>
+    <tr><td><code>permissions:</code></td><td>สิทธิ์ของ <code>GITHUB_TOKEN</code> (ขอเท่าที่ใช้)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Flow ประจำวัน</h3>
+<pre><code>git switch main &amp;&amp; git pull           # 1. เริ่มจาก main ล่าสุดเสมอ
+git switch -c feat/my-thing           # 2. แตก branch
+# ... เขียนโค้ด ...
+npm run lint:check &amp;&amp; npm test        # 3. ตรวจในเครื่องก่อน push (ประหยัดรอบ CI)
+git commit -am "feat: my thing"
+git push -u origin feat/my-thing      # 4. push branch
+# 5. เปิด PR → (Enable auto-merge) → CI ✅ → Squash and merge
+git switch main &amp;&amp; git pull           # 6. ดึงผล merge กลับมา</code></pre>
+
+<h3>Conflict</h3>
+<pre><code>git fetch origin
+git merge origin/main        # แก้ไฟล์ที่มี &lt;&lt;&lt;&lt;&lt;&lt;&lt; ======= &gt;&gt;&gt;&gt;&gt;&gt;&gt;
+npm test
+git add . &amp;&amp; git commit &amp;&amp; git push   # CI รันใหม่อัตโนมัติ</code></pre>
+
+<!-- ============================================================ -->
+<h2>4. ต้องรู้ shell แค่ไหน?</h2>
+<div class="card">
+  <p style="margin-top:0"><strong>ไม่ต้องเก่ง แต่ต้องอ่านออก</strong> — ส่วนใหญ่ของ workflow คือ <code>uses:</code> (ไม่ต้องเขียน shell เลย) ส่วน <code>run:</code> มักเป็นคำสั่งที่คุณพิมพ์ใน terminal ทุกวันอยู่แล้ว เช่น <code>npm ci</code>, <code>npm test</code></p>
+  <p>shell (bash) ที่เจอบ่อยใน CI/CD มีแค่นี้:</p>
+  <ul>
+    <li><code>curl -X POST "$URL"</code> — ยิง HTTP (deploy hook, แจ้งเตือน Slack)</li>
+    <li><code>$VAR</code> / <code>env:</code> — ใช้ตัวแปร (ส่ง secret ผ่าน <code>env:</code> ปลอดภัยกว่าใส่ <code>${{ }}</code> ตรง ๆ ใน <code>run:</code>)</li>
+    <li><code>if [ -z "$VAR" ]; then ... fi</code> — เช็กว่าตัวแปรว่างไหม</li>
+    <li><code>exit 1</code> — สั่งให้ step พัง (CI แดง)</li>
+    <li><code>echo "::error::ข้อความ"</code> — ขึ้นข้อความ error สีแดงใน Annotations</li>
+    <li><code>ssh user@host "docker pull ... &amp;&amp; docker run ..."</code> — ถ้าวันหนึ่ง deploy ลง VPS เอง</li>
+  </ul>
+  <p style="margin-bottom:0">ข้อสังเกต: runner เป็น <strong>Linux (bash)</strong> ไม่ใช่ PowerShell — คำสั่งบางตัวในเครื่อง Windows จึงใช้ใน workflow ไม่ได้ ถ้าไม่แน่ใจ ให้หา action สำเร็จรูปก่อน แทบทุกเรื่องมีคนทำไว้แล้ว</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>5. ข้อผิดพลาดที่เจอระหว่างเรียน</h2>
+<div class="card warn">
+  <ul style="margin:0">
+    <li><strong>ลืม <code>.gitignore</code></strong> — git พยายาม add <code>node_modules</code> ทั้งก้อน</li>
+    <li><strong>กด Merge แต่ไม่กด Confirm merge</strong> — PR ยังเปิดอยู่ main ไม่เปลี่ยน</li>
+    <li><strong>ลืม <code>git pull</code> หลัง merge</strong> — merge เกิดบน GitHub ไม่ใช่ในเครื่อง</li>
+    <li><strong>push ทั้งที่ lint ไม่ผ่าน (2 รอบ)</strong> — รัน <code>npm run lint:check</code> ก่อน push ทุกครั้ง หรือทำ pre-commit hook (ดูข้อ 6)</li>
+    <li><strong>ตั้ง approvals = 1 ตอนทำคนเดียว</strong> — merge ไม่ได้ตลอดกาล เพราะ approve PR ตัวเองไม่ได้</li>
+    <li><strong>GHCR package เป็น private</strong> — Render / <code>docker pull</code> ขึ้น unauthorized</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2>6. ไปต่อ (ทำเมื่อมีโอกาส)</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>หัวข้อ</th><th>ช่วยอะไร</th><th>ระดับ</th></tr></thead>
+  <tbody>
+    <tr><td>Pre-commit hook (<code>husky</code> + <code>lint-staged</code>)</td><td>lint ก่อน commit อัตโนมัติ — แก้ปัญหา push ทั้งที่ lint พัง</td><td><span class="tag rec">ควรทำ</span></td></tr>
+    <tr><td>Render: ตั้ง Health Check Path = <code>/hc</code></td><td>Render ไม่สลับไปใช้ deploy ใหม่ถ้า <code>/hc</code> ไม่ตอบ</td><td><span class="tag rec">ควรทำ</span></td></tr>
+    <tr><td>GitHub CLI (<code>gh</code>)</td><td>สร้าง PR + auto-merge จาก terminal 3 บรรทัด</td><td><span class="tag opt">ข้ามได้</span></td></tr>
+    <tr><td>Environment หลายตัว (staging → production)</td><td>deploy staging อัตโนมัติ, production ต้องมีคน approve</td><td><span class="tag opt">ข้ามได้</span></td></tr>
+    <tr><td>Rollback</td><td>เรียก deploy hook ด้วย <code>imgURL</code> ของ sha เก่า (ทำผ่าน <code>workflow_dispatch</code>)</td><td><span class="tag opt">ข้ามได้</span></td></tr>
+    <tr><td>Matrix build</td><td>ทดสอบหลาย Node version พร้อมกัน (เหมาะกับ library)</td><td><span class="tag opt">ข้ามได้</span></td></tr>
+    <tr><td>Dependabot</td><td>เปิด PR อัปเดต package/action ให้อัตโนมัติ แล้ว CI ตรวจให้</td><td><span class="tag opt">ข้ามได้</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+</main>
+</body>
+</html>
